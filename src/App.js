@@ -1,25 +1,25 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Switch, Route } from "react-router-dom"
 
-function App() {
+
+import pageRoutes from './router';
+import Login from "./pages/auth"
+import PrivateRoute from './router/privateRoute';
+import Cetak from './pages/Cetak';
+import Page404 from './pages/404';
+
+
+const App = function () {
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Switch>
+      {pageRoutes.map((data, i) => {
+        return <PrivateRoute key={i} index={i} exact path={data.path} component={data.component} />
+      })}
+      <Route exact path='/login' component={Login} />
+      <Route exact path='/cetak/:bulan' component={Cetak} />
+      <Route path="" component={Page404} />
+    </Switch>
   );
 }
 

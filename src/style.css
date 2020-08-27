@@ -1,0 +1,14 @@
+@import '~antd/dist/antd.css';
+
+ .logo {
+   display: block;
+   box-sizing: border-box;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 16px;
+    text-align: center;
+  }
+  
+  .site-layout .site-layout-background {
+    background: #fff;
+  }
