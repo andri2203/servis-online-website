@@ -111,7 +111,9 @@ function TableServices() {
               onClick={() => {
                 const modal = Modal.confirm({
                   title: "Anda akan menghapus data ini?",
-                  content: record.key + " akan dihapus permanen.",
+                  content:
+                    text["nama"] +
+                    " akan dihapus dari daftar montir secara permanen. Apakah anda ingin menghapusnya? ",
                   cancelText: "Tidak Sekarang",
                   okText: "Ya Sekarang",
                 });
