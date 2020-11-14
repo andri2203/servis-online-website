@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Table, Button, message, Modal, Form, Input } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { EditOutlined, DeleteOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import firebase from "../../firebase";
 
 const TableAntrian = function () {
@@ -40,6 +40,7 @@ const TableAntrian = function () {
       dataIndex: "tglWaktu",
       title: "Tgl Waktu",
     },
+
     {
       key: "montir",
       dataIndex: "montir",
@@ -51,14 +52,27 @@ const TableAntrian = function () {
       title: "Servis",
     },
     {
+      key: "status",
+      dataIndex: "status",
+      title: "Status",
+      render: (status) => {
+        if (status === 1) {
+          return <span style={{ padding: "7px 15px", background: 'green', display: "inline-block", color: 'white' }}>Sedang Dikerjakan</span>
+        } else if (status === 0) {
+          return <span style={{ padding: "7px 15px", background: '#ffd700', display: "inline-block", color: 'white' }}>Menunggu</span>
+
+        }
+      }
+    },
+    {
       key: "action",
       dataIndex: "action",
       title: "Action",
-      render: (key) => {
+      render: ({ key, data }) => {
         const validate = { required: "wajib diisi", min: "terlalu sedikit" };
+        if (data['success'] === 1) {
 
-        return (
-          <React.Fragment>
+          return <React.Fragment>
             <Button
               icon={<EditOutlined />}
               type="primary"
@@ -161,12 +175,35 @@ const TableAntrian = function () {
                     {dataItem.length === 0
                       ? 0
                       : dataItem.length === 1
-                      ? dataItem[0].harga
-                      : dataItem.reduce((x, y) => x + parseInt(y.harga), 0)}
+                        ? dataItem[0].harga
+                        : dataItem.reduce((x, y) => x + parseInt(y.harga), 0)}
                   </h3>
                 )}
               />
             </Modal>
+          </React.Fragment>
+        } else if (data['success'] === 0) {
+          return <React.Fragment>
+            <Button
+              type="primary"
+              icon={<ExclamationCircleOutlined />}
+              onClick={() => {
+                const modal = Modal.confirm({
+                  title: "Konfirmasi",
+                  content: `Motor ${data['motor']} dari ${data['nama']} akan di servis.`,
+                  cancelText: "Jangan Sekarang",
+                  okText: "Servis Sekarang",
+                });
+                modal.update({
+                  onOk: function (e) {
+                    handleServis(key, modal)
+                  },
+                });
+
+              }}
+            >
+              Kerjakan
+            </Button>
             <Button
               icon={<DeleteOutlined />}
               type="primary"
@@ -184,10 +221,12 @@ const TableAntrian = function () {
                     handleDelete(key, modal);
                   },
                 });
+
               }}
-            />
+            >Hapus</Button>
           </React.Fragment>
-        );
+        }
+
       },
       width: 150,
     },
@@ -216,7 +255,7 @@ const TableAntrian = function () {
         .doc(key)
         .update({
           kerusakan: dataItem,
-          success: true,
+          success: 2,
         })
         .finally(() =>
           message.success(
@@ -235,6 +274,17 @@ const TableAntrian = function () {
     }
   };
 
+  const handleServis = (key, modal) => {
+    firebase.firestore().collection('antrian').doc(key).update({
+      success: 1
+    }).finally(() => {
+      modal.destroy();
+      setTimeout(() => {
+        message.success("Motor Telah masuk ruangan servis.", 5);
+      }, 1000);
+    })
+  }
+
   const handleDelete = (key, modal) => {
     firebase
       .firestore()
@@ -242,11 +292,13 @@ const TableAntrian = function () {
       .doc(key)
       .delete()
       .finally(() => {
+        modal.destroy();
         setTimeout(() => {
           message.success("Data berhasil dihapus.", 5);
         }, 1000);
       })
       .catch((reason) => {
+        modal.destroy();
         setTimeout(() => {
           message.error(reason, 7);
         }, 1000);
@@ -281,7 +333,9 @@ const TableAntrian = function () {
     firebase
       .firestore()
       .collection("antrian")
-      .where("success", "==", false)
+      .where("success", "<", 2)
+      .orderBy('success', 'desc')
+      .orderBy('daftar', 'desc')
       .onSnapshot((snap) => {
         setloading(false);
         let qry = snap.docs.map((doc, i) => ({
@@ -293,11 +347,12 @@ const TableAntrian = function () {
           tglWaktu: dateFormat(doc.data()["daftar"].seconds * 1000),
           montir: doc.data()["montir"],
           servis: doc.data()["servis"],
-          action: doc.id,
+          status: doc.data()["success"],
+          action: { key: doc.id, data: doc.data() },
         }));
         setdata(qry);
       });
-  });
+  }, []);
 
   return (
     <Table

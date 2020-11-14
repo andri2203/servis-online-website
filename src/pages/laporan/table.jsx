@@ -31,8 +31,8 @@ const EditableCell = ({
           <Input />
         </Form.Item>
       ) : (
-        children
-      )}
+          children
+        )}
     </td>
   );
 };
@@ -123,14 +123,14 @@ const FormTambah = React.forwardRef((props, ref) => {
       </Form.Item>
     </Form>
   ) : (
-    <Button
-      type="primary"
-      style={{ marginBottom: "10px" }}
-      onClick={() => setFormActive(true)}
-    >
-      Tambah Data
-    </Button>
-  );
+      <Button
+        type="primary"
+        style={{ marginBottom: "10px" }}
+        onClick={() => setFormActive(true)}
+      >
+        Tambah Data
+      </Button>
+    );
 });
 
 const TableLaporan = function () {
@@ -296,32 +296,32 @@ const TableLaporan = function () {
                   </Popconfirm>
                 </span>
               ) : (
-                <>
-                  <Button
-                    type="primary"
-                    disabled={editingKey !== null}
-                    onClick={() => edit(record)}
-                  >
-                    Edit
-                  </Button>
-                  <Popconfirm
-                    title="Yakin ingin dihapus?"
-                    onConfirm={() =>
-                      handleDeleteItem(
-                        text.filter((item, i) => item.key !== record.key)
-                      )
-                    }
-                  >
+                  <>
                     <Button
                       type="primary"
-                      danger
                       disabled={editingKey !== null}
+                      onClick={() => edit(record)}
                     >
-                      <DeleteOutlined />
-                    </Button>
-                  </Popconfirm>
-                </>
-              );
+                      Edit
+                  </Button>
+                    <Popconfirm
+                      title="Yakin ingin dihapus?"
+                      onConfirm={() =>
+                        handleDeleteItem(
+                          text.filter((item, i) => item.key !== record.key)
+                        )
+                      }
+                    >
+                      <Button
+                        type="primary"
+                        danger
+                        disabled={editingKey !== null}
+                      >
+                        <DeleteOutlined />
+                      </Button>
+                    </Popconfirm>
+                  </>
+                );
             },
           },
         ];
@@ -402,8 +402,8 @@ const TableLaporan = function () {
                       {text.length === 0
                         ? 0
                         : text.length === 1
-                        ? text[0].harga
-                        : text.reduce((x, y) => x + parseInt(y.harga), 0)}
+                          ? text[0].harga
+                          : text.reduce((x, y) => x + parseInt(y.harga), 0)}
                     </h3>
                   )}
                 />
@@ -420,7 +420,7 @@ const TableLaporan = function () {
     firebase
       .firestore()
       .collection("antrian")
-      .where("success", "==", true)
+      .where("success", "==", 2)
       .orderBy("daftar", "desc")
       .onSnapshot((snap) => {
         setloading(false);

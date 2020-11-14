@@ -40,7 +40,7 @@ const Dashboard = () => {
     firebase
       .firestore()
       .collection("antrian")
-      .where("success", "==", true)
+      .where("success", "==", 2)
       .orderBy("daftar", "asc")
       .onSnapshot((snap) => {
         setLaporan(snap.docs);
@@ -71,7 +71,7 @@ const Dashboard = () => {
     firebase
       .firestore()
       .collection("antrian")
-      .where("success", "==", false)
+      .where("success", "<", 2)
       .onSnapshot((snap) => {
         setAntrian(snap.docs);
       });
@@ -89,7 +89,7 @@ const Dashboard = () => {
       .onSnapshot((snap) => {
         setMontir(snap.docs.length);
       });
-  });
+  }, []);
 
   const config = {
     data,

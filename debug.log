@@ -13,3 +13,5 @@
 [0821/181526.388:ERROR:crash_report_database_win.cc(469)] failed to stat report
 [0821/181625.069:ERROR:crash_report_database_win.cc(469)] failed to stat report
 [0909/194304.549:ERROR:crash_report_database_win.cc(469)] failed to stat report
+[0921/071747.291:ERROR:registration_protocol_win.cc(103)] CreateFile: The system cannot find the file specified. (0x2)
+[0921/071753.939:ERROR:registration_protocol_win.cc(103)] CreateFile: The system cannot find the file specified. (0x2)

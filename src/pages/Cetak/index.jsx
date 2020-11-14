@@ -93,7 +93,7 @@ const DataTable = React.forwardRef((props, ref) => {
       .collection("antrian")
       .where("daftar", ">=", start)
       .where("daftar", "<=", end)
-      .where("success", "==", true)
+      .where("success", "==", 2)
       .orderBy("daftar", "desc")
       .onSnapshot((snap) => {
         setloading(false);
@@ -141,8 +141,8 @@ const DataTable = React.forwardRef((props, ref) => {
             <td>
               Rp.
               {formatter.format(
-                data.reduce((a, b) => a + parseInt(b.harga.substr(4)), 0)
-              )}
+              data.reduce((a, b) => a + parseInt(b.harga.substr(4)), 0)
+            )}
             </td>
           </tr>
         </tbody>
